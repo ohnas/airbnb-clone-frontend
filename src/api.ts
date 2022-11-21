@@ -35,3 +35,18 @@ export const logOut = () =>
     }).then((response) => response.data);
 // user/log-out -> 오류발생
 // user/log-out/ -> 마지막에 '/' 있어야 오류 발생하지 않음
+
+export const githubLogIn = (code: string) =>
+  instance
+    .post(
+      `/users/github/`,
+      { code },
+      {
+        headers: {
+          "X-CSRFToken": Cookie.get("csrftoken") || "",
+        },
+      }
+    )
+    .then((response) => response.status);
+// user/log-out -> 오류발생
+// user/log-out/ -> 마지막에 '/' 있어야 오류 발생하지 않음
