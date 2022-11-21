@@ -50,3 +50,16 @@ export const githubLogIn = (code: string) =>
     .then((response) => response.status);
 // user/github -> 오류발생
 // user/github/ -> 마지막에 '/' 있어야 오류 발생하지 않음(backend 서버의 url.py에서 설정한url이 동일해야함)
+
+export const kakaoLogin = (code: string) =>
+  instance
+    .post(
+      `/users/kakao/`,
+      { code },
+      {
+        headers: {
+          "X-CSRFToken": Cookie.get("csrftoken") || "",
+        },
+      }
+    )
+    .then((response) => response.status);
