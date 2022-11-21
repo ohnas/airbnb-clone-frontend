@@ -25,7 +25,7 @@ export const getRoomReviews = ({ queryKey }: QueryFunctionContext) => {
 export const getMe = () =>
   instance.get(`users/me/`).then((response) => response.data);
 // user/me -> 오류발생
-// user/me/ -> 마지막에 '/' 있어야 오류 발생하지 않음 이유는 모르겠응 구굴링함
+// user/me/ -> 마지막에 '/' 있어야 오류 발생하지 않음(backend 서버의 url.py에서 설정한url이 동일해야함)
 
 export const logOut = () =>
   instance.post(`users/log-out/`, null, {
@@ -34,7 +34,7 @@ export const logOut = () =>
       },
     }).then((response) => response.data);
 // user/log-out -> 오류발생
-// user/log-out/ -> 마지막에 '/' 있어야 오류 발생하지 않음
+// user/log-out/ -> 마지막에 '/' 있어야 오류 발생하지 않음(backend 서버의 url.py에서 설정한url이 동일해야함)
 
 export const githubLogIn = (code: string) =>
   instance
@@ -48,5 +48,5 @@ export const githubLogIn = (code: string) =>
       }
     )
     .then((response) => response.status);
-// user/log-out -> 오류발생
-// user/log-out/ -> 마지막에 '/' 있어야 오류 발생하지 않음
+// user/github -> 오류발생
+// user/github/ -> 마지막에 '/' 있어야 오류 발생하지 않음(backend 서버의 url.py에서 설정한url이 동일해야함)
