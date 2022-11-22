@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Button,
   Container,
   Grid,
   GridItem,
@@ -16,18 +17,26 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import { getRoom, getRoomReviews } from "../api";
+import { checkBooking, getRoom, getRoomReviews } from "../api";
 import { IReview, IRoomDetail } from "../types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function RoomDetail() {
   const { roomPk } = useParams();
   const { isLoading, data } = useQuery<IRoomDetail>([`rooms`, roomPk], getRoom);
-  const { data: reviewsData, isLoading: isReviewsLoading } = useQuery<
-    IReview[]
-  >([`rooms`, roomPk, `reviews`], getRoomReviews);
-  const [dates, setDates] = useState<Date>();
-  console.log(dates);
+  const { data: reviewsData } = useQuery<IReview[]>(
+    [`rooms`, roomPk, `reviews`],
+    getRoomReviews
+  );
+  const [dates, setDates] = useState<Date[]>();
+  const { data: checkBookingData, isLoading: isCheckingBooking } = useQuery(
+    ["check", roomPk, dates],
+    checkBooking,
+    {
+      cacheTime: 0,
+      enabled: dates !== undefined,
+    }
+  );
   return (
     <Box pb={40} mt={10} px={{base:10, lg:40,}}>
       <Skeleton height={"43px"} width="25%" isLoaded={!isLoading}>
@@ -49,7 +58,7 @@ export default function RoomDetail() {
           </GridItem>
         ))}
       </Grid>
-      <Grid gap={20} templateColumns={"2fr 1fr"} maxW="container.lg">
+      <Grid gap={60} templateColumns={"2fr 1fr"}>
         <Box>
           <HStack justifyContent={"space-between"} mt={10}>
             <VStack alignItems={"flex-start"}>
@@ -122,6 +131,18 @@ export default function RoomDetail() {
               maxDate={new Date(Date.now() + 60 * 60 * 24 * 7 * 4 * 6 * 1000)}
               selectRange
             />
+            <Button
+              disabled={!checkBookingData?.ok}
+              isLoading={isCheckingBooking}
+              my={5}
+              w="100%"
+              colorScheme={"red"}
+            >
+              Make booking
+            </Button>
+            {!isCheckingBooking && !checkBookingData?.ok ? (
+              <Text color="red.500">Can't book on those dates, sorry.</Text>
+            ) : null}
           </Box>
         </Grid>
     </Box>
